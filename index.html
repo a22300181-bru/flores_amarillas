@@ -12,38 +12,41 @@
             font-family: 'Arial', sans-serif;
             background: linear-gradient(to bottom, #ff5e62, #ff914d, #f7c948);
             height: 100vh;
+            width: 100vw;
         }
 
         .sun {
             position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 100px;
-            height: 100px;
+            top: 5%;
+            left: 5%;
+            width: 80px;
+            height: 80px;
             background: radial-gradient(circle, #fff176, #fbc02d);
             border-radius: 50%;
-            box-shadow: 0 0 80px 20px rgba(255, 200, 0, 0.6);
+            box-shadow: 0 0 50px 15px rgba(255, 200, 0, 0.5);
             z-index: 1;
         }
 
         .message {
             position: absolute;
-            top: 40px;
-            right: 40px;
+            top: 15%;
+            right: 5%;
+            left: 5%; /* Añadido para ayudar al centrado en móvil */
             color: white;
-            font-size: 3.5rem;
+            font-size: 2.5rem; /* Tamaño base más pequeño */
             font-weight: bold;
             text-shadow: 3px 3px 10px rgba(0,0,0,0.3);
             z-index: 10;
             opacity: 0;
             animation: fadeIn 2s forwards 1s;
+            text-align: right; /* Por defecto a la derecha */
         }
 
         .field {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 40vh;
+            height: 35vh;
             background: linear-gradient(to top, #1b5e20, #4caf50);
             z-index: 2;
             box-shadow: 0 -10px 50px rgba(0,0,0,0.2);
@@ -59,18 +62,36 @@
 
         .main-flower {
             position: absolute;
-            bottom: 30px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
             cursor: pointer;
             z-index: 100;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .main-flower:hover {
-            transform: translateX(-50%) scale(1.2) rotate(5deg);
+            transform: translateX(-50%) scale(1.1) rotate(5deg);
+        }
+
+        /* --- Ajustes para Celulares --- */
+        @media (max-width: 600px) {
+            .sun {
+                width: 60px;
+                height: 60px;
+                top: 2%;
+            }
+            .message {
+                top: 25%; /* Bajamos el texto para que no choque con el sol */
+                font-size: 2rem;
+                text-align: center; /* Centrado en móviles se ve mejor */
+            }
+            .main-flower {
+                font-size: 60px !important; /* Un poco más pequeña en móvil */
+            }
         }
 
         @keyframes grow {
@@ -101,17 +122,15 @@
         const field = document.getElementById('field');
         const mainBtn = document.getElementById('mainBtn');
 
-        // Función para crear flores
         function spawnFlower() {
-            // Creamos un div en lugar de una img para usar el emoji directo
-            // Esto asegura que se vea en cualquier dispositivo sin depender de archivos externos
             const flower = document.createElement('div');
             flower.innerHTML = "🌻";
             flower.className = 'flower';
             
-            const x = Math.random() * 100;
-            const y = Math.random() * 200; // Más rango para que llenen el pasto
-            const size = Math.random() * (50 - 20) + 20;
+            // Limitamos el ancho al 90% para que no toquen los bordes exactos en móvil
+            const x = Math.random() * 90 + 5; 
+            const y = Math.random() * (field.offsetHeight - 40); 
+            const size = Math.random() * (40 - 20) + 20;
             const delay = Math.random() * 2;
 
             flower.style.left = `${x}%`;
@@ -123,11 +142,12 @@
         }
 
         mainBtn.addEventListener('click', () => {
-            for (let i = 0; i < 100; i++) {
-                setTimeout(spawnFlower, i * 40);
+            // Reducimos un poco la cantidad para evitar lag en móviles viejos
+            for (let i = 0; i < 60; i++) {
+                setTimeout(spawnFlower, i * 50);
             }
             
-            mainBtn.style.transform = "translateX(-50%) scale(0.8)";
+            mainBtn.style.transform = "translateX(-50%) scale(0.9)";
             setTimeout(() => {
                 mainBtn.style.transform = "translateX(-50%) scale(1)";
             }, 100);
